@@ -13,7 +13,6 @@ host = "10.10.15.4"
 # tcp scan current port
 def tcp_scan(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
     try:
         res = sock.connect_ex((host, port))
         if res == 0:
