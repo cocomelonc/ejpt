@@ -41,7 +41,7 @@ sudo masscan -p 21,22,80,8080,445,9200 --rate 64000 --wait 0 --open-only -oG mas
 sudo masscan -iL hosts.list -p0-65535 --rate 64000 --open-only
 ```
 
-### httpint
+### httprint
 
 httprint banner grabling:
 ```bash
@@ -119,6 +119,33 @@ dirb https://10.10.10.5 /usr/share/dirb/wordlists/vulns/apache.txt
 dirb https://192.168.16.33 /usr/share/dirb/wordlists/common.txt
 
 gobuster dir -u http://10.10.10.160 -w /usr/share/wordlists/dirb/common.txt -t 16
+```
+
+### web app enum (ffuf)
+
+directory discovery:
+```bash
+ffuf -w wordlist.txt -u http://example.com/FUZZ
+```
+
+file discovery:
+```bash
+ffuf -w wordlist.txt -u http://example.com/FUZZ -e .aspx,.php,.txt,.html
+```
+
+output of responses with status code:
+```bash
+ffuf -w /usr/share/wordlists/dirb/small.txt -u http://example.com/FUZZ -mc 200,301
+```
+
+the -maxtime flag offers to end the ongoing fuzzing after the specified time in seconds:
+```bash
+ffuf -w wordlist.txt -u http://example.com/FUZZ -maxtime 60
+```
+
+number of threads:
+```bash
+ffuf -w wordlist.txt -u http://example.com/FUZZ -t 64
 ```
 
 ### sqlmap
