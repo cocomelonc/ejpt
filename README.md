@@ -255,6 +255,7 @@ hashcat -m 1000 -a 0 -o found.txt --remove crack.hash rockyou-10.txt
 wpscan --url http://10.10.10.14 --enumerate u
 wpscan --url example.com -e vp --plugins-detection mixed --api-token API_TOKEN
 wpscan --url example.com -e u --passwords /usr/share/wordlists/rockyou.txt
+wpscan --url example.com -U admin -P /usr/share/wordlists/rockyou.txt
 ```
 
 ### mysql
