@@ -259,8 +259,16 @@ wpscan --url example.com -U admin -P /usr/share/wordlists/rockyou.txt
 ```
 
 ### mysql
+scan:
 ```bash
-mysql -h 10.10.10.23 -P 13306 -u root -p
+nmap -sV -p 3306 --script mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122 10.10.10.13
+```
+
+examples:
+```bash
+mysql -h 10.10.10.23 -P 13306 -u root -p -e "show databases;"
+mysql -h 10.10.10.23 -P 13306 -u root -p -e "use mydb;show tables;"
+mysql -h 10.10.10.23 -P 13306 -u root -p -e "use mydb;select * from users;"
 ```
 
 ### msfconsole
